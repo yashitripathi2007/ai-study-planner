@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Study Planner</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Study Planner</h1>
+
+        <form method="POST">
+            <input type="text" name="subjects" placeholder="Subjects (comma separated)" required>
+            <input type="number" name="hours" placeholder="Hours per day" required>
+            <input type="number" name="days" placeholder="Number of days" required>
+            <button type="submit">Generate Plan</button>
+        </form>
+
+        {% if plan %}
+        <div class="plan">
+            <h2>Your Study Plan</h2>
+            <ul>
+                {% for item in plan %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
