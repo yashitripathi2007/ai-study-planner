@@ -1,30 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>AI Study Planner</title>
-    <link rel="stylesheet" href="/static/style.css">
+<meta charset="UTF-8">
+<title>AI Study Planner</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/static/style.css">
+<style>
+  .result { margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 8px; }
+  .subject-plan { margin-bottom: 10px; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>AI Study Planner</h1>
+<main class="app">
+    <section class="card">
+        <header class="header">
+            <h1>📘 AI Study Planner</h1>
+            <p class="subtitle">Generate a smart, realistic study plan based on your available time</p>
+        </header>
 
-        <form method="POST">
-            <input type="text" name="subjects" placeholder="Subjects (comma separated)" required>
-            <input type="number" name="hours" placeholder="Hours per day" required>
-            <input type="number" name="days" placeholder="Number of days" required>
-            <button type="submit">Generate Plan</button>
+        <form id="study-form" class="form">
+            <div class="field">
+                <label for="subjects">Subjects</label>
+                <input type="text" id="subjects" name="subjects" placeholder="Math, Python, DSA" required />
+            </div>
+
+            <div class="field">
+                <label for="hours">Study hours per day</label>
+                <input type="number" id="hours" name="hours" placeholder="5" min="1" max="24" required />
+            </div>
+
+            <div class="field">
+                <label for="days">Number of days</label>
+                <input type="number" id="days" name="days" placeholder="30" min="1" required />
+            </div>
+
+            <button type="submit" class="btn">Generate Plan</button>
         </form>
 
-        {% if plan %}
-        <div class="plan">
-            <h2>Your Study Plan</h2>
-            <ul>
-                {% for item in plan %}
-                    <li>{{ item }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-    </div>
+        <div id="result" class="result" style="display:none;"></div>
+    </section>
+</main>
+
+<script>
+document.getElementById('study-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Get user input
+    const subjectsInput = document.getElementById('subjects').value;
+    const hoursPerDay = parseFloat(document.getElementById('hours').value);
+    const days = parseInt(document.getElementById('days').value);
+
+    const subjects = subjectsInput.split(',').map(s => s.trim()).filter(s => s);
+    if(subjects.length === 0) return;
+
+    // Simple plan logic: divide hours equally among subjects per day
+    const plan = [];
+    subjects.forEach(subject => {
+        const totalHours = hoursPerDay * days / subjects.length;
+        plan.push({subject, hoursPerDay: (totalHours / days).toFixed(2)});
+    });
+
+    // Display plan
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = '<h3>Your Study Plan:</h3>';
+    plan.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'subject-plan';
+        div.textContent = `${p.subject}: ${p.hoursPerDay} hours/day`;
+        resultDiv.appendChild(div);
+    });
+    resultDiv.style.display = 'block';
+});
+</script>
 </body>
 </html>
